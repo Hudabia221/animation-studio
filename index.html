@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation Studio</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --text: #f8fafc;
+      --subtext: #94a3b8;
+      --border: #334155;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 2rem;
+      color: var(--text);
+    }
+    p {
+      margin: 0;
+      color: var(--subtext);
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--subtext);
+    }
+    input, textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text);
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: var(--accent-hover);
+    }
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Animation Studio</h1>
+      <p>Generate audio and animation assets directly from your browser</p>
+    </header>
+
+    <div class="card">
+      <div>
+        <label for="elevenKey">ElevenLabs API Key</label>
+        <input type="password" id="elevenKey" placeholder="Paste your ElevenLabs key here">
+      </div>
+
+      <div>
+        <label for="heygenKey">HeyGen API Key</label>
+        <input type="password" id="heygenKey" placeholder="Paste your HeyGen key here">
+      </div>
+
+      <div>
+        <label for="scriptInput">Script / Prompt</label>
+        <textarea id="scriptInput" placeholder="Type your script or animation prompt here..."></textarea>
+      </div>
+
+      <button id="generateBtn">Generate Assets</button>
+      <div id="statusBox" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const eleven = document.getElementById('elevenKey').value.trim();
+      const heygen = document.getElementById('heygenKey').value.trim();
+      const script = document.getElementById('scriptInput').value.trim();
+      const status = document.getElementById('statusBox');
+
+      status.style.display = 'block';
+
+      if (!eleven || !heygen || !script) {
+        status.style.color = '#f87171';
+        status.textContent = 'Please fill in both API keys and enter a script.';
+        return;
+      }
+
+      status.style.color = '#34d399';
+      status.textContent = 'Keys and script received! Ready for API processing.';
+    });
+  </script>
+</body>
+</html>
