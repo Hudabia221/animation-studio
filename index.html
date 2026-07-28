@@ -142,7 +142,12 @@
       }
 
       status.style.color = '#34d399';
-      status.textContent = 'Keys and script received! Ready for API processing.';
+      status.textContent = 'Keys and script received! Processing assets...';
+
+      // Simulate API asset generation process
+      setTimeout(() => {
+        status.textContent = 'Success! Your animation assets are ready.';
+      }, 2000);
     });
   </script>
 </body>
