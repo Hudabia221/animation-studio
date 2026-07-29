@@ -96,14 +96,6 @@
       font-size: 0.9rem;
       display: none;
     }
-    .divider {
-      border-top: 1px solid var(--border);
-      margin: 10px 0;
-    }
-    .row {
-      display: flex;
-      gap: 10px;
-    }
   </style>
 </head>
 <body>
@@ -118,7 +110,7 @@
       <h3 style="margin:0; color:var(--text);">Manage Characters</h3>
       <div>
         <label for="newCharName">Character Name</label>
-        <input type="text" id="newCharName" placeholder="e.g. Ali, Grandfather, Narrator">
+        <input type="text" id="newCharName" placeholder="e.g. Ali, Gungun, Narrator">
       </div>
       <div>
         <label for="newCharVoiceId">ElevenLabs Voice ID</label>
@@ -154,8 +146,7 @@
   <script>
     // Default starting characters stored in browser memory
     let characters = JSON.parse(localStorage.getItem('animation_chars')) || [
-      { name: 'Narrator', id: '21m00Tcm4TlvDq8ikWAM' },
-      { name: 'Sameer (Main Kid)', id: 'AZnzlk1XvdvUeBnXmlld' }
+      { name: 'Narrator', id: '21m00Tcm4TlvDq8ikWAM' }
     ];
 
     const characterSelect = document.getElementById('characterSelect');
@@ -228,12 +219,15 @@
           },
           body: JSON.stringify({
             text: scriptText,
-            model_id: 'eleven_multilingual_v2',
+            model_id: 'eleven_flash_v2_5',
             voice_settings: { stability: 0.5, similarity_boost: 0.7 }
           })
         });
 
-        if (!elevenResponse.ok) throw new Error('Failed to generate audio from ElevenLabs. Check your Voice ID and API key.');
+        if (!elevenResponse.ok) {
+          const errData = await elevenResponse.json().catch(() => ({}));
+          throw new Error(errData.detail?.message || 'Failed to generate audio from ElevenLabs. Check your Voice ID and API key.');
+        }
         
         const audioBlob = await elevenResponse.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
