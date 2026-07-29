@@ -110,13 +110,16 @@
       <h3 style="margin:0; color:var(--text);">Manage Characters</h3>
       <div>
         <label for="newCharName">Character Name</label>
-        <input type="text" id="newCharName" placeholder="e.g. Ali (Urdu), Narrator (English)">
+        <input type="text" id="newCharName" placeholder="e.g. Ali, Narrator">
       </div>
       <div>
-        <label for="newCharVoiceId">ElevenLabs Voice ID (From Your Voice Lab)</label>
-        <input type="text" id="newCharVoiceId" placeholder="Paste Voice ID here">
+        <label for="newCharVoiceId">ElevenLabs Voice ID</label>
+        <input type="text" id="newCharVoiceId" placeholder="Paste Voice ID here (e.g. pNInz6obpgDQGcFmaJgB)">
       </div>
-      <button id="addCharBtn" style="background: #3b82f6;">Add New Character</button>
+      <div style="display: flex; gap: 10px;">
+        <button id="addCharBtn" style="background: #3b82f6; flex: 2;">Add New Character</button>
+        <button id="resetCharsBtn" style="background: #ef4444; flex: 1;" title="Clears old default characters">Reset List</button>
+      </div>
     </div>
 
     <!-- Main Generator Card -->
@@ -144,9 +147,8 @@
   </div>
 
   <script>
-    let characters = JSON.parse(localStorage.getItem('animation_chars')) || [
-      { name: 'Narrator (Default)', id: '21m00Tcm4TlvDq8ikWAM' }
-    ];
+    // Load characters or start fresh
+    let characters = JSON.parse(localStorage.getItem('animation_chars')) || [];
 
     const characterSelect = document.getElementById('characterSelect');
 
@@ -168,6 +170,7 @@
 
     updateDropdown();
 
+    // Add new character
     document.getElementById('addCharBtn').addEventListener('click', () => {
       const name = document.getElementById('newCharName').value.trim();
       const voiceId = document.getElementById('newCharVoiceId').value.trim();
@@ -187,6 +190,17 @@
       alert('Character added successfully!');
     });
 
+    // Reset / Clear characters button
+    document.getElementById('resetCharsBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all saved characters?')) {
+        characters = [];
+        localStorage.removeItem('animation_chars');
+        updateDropdown();
+        alert('Character list cleared. Now you can add your own fresh characters!');
+      }
+    });
+
+    // Generate audio script
     document.getElementById('generateBtn').addEventListener('click', async () => {
       const elevenKey = document.getElementById('elevenKey').value.trim();
       const selectedVoiceId = characterSelect.value;
@@ -195,9 +209,9 @@
 
       status.style.display = 'block';
 
-      if (!elevenKey || !scriptText || !selectedVoiceId) {
+      if (!elevenKey || !scriptText || !selectedVoiceId || characters.length === 0) {
         status.style.color = '#f87171';
-        status.textContent = 'Please fill in your API key, select a character, and enter a script line.';
+        status.textContent = 'Please add a character, select it from the dropdown, fill in your API key, and enter a script line.';
         return;
       }
 
