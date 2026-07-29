@@ -102,7 +102,7 @@
   <div class="container">
     <header>
       <h1>Animation Studio</h1>
-      <p>Create voices and episodes effortlessly without touching code</p>
+      <p>Create English & Urdu voice-overs effortlessly</p>
     </header>
 
     <!-- Character Manager Card -->
@@ -110,10 +110,10 @@
       <h3 style="margin:0; color:var(--text);">Manage Characters</h3>
       <div>
         <label for="newCharName">Character Name</label>
-        <input type="text" id="newCharName" placeholder="e.g. Ali, Gungun, Narrator">
+        <input type="text" id="newCharName" placeholder="e.g. Ali (Urdu), Narrator (English)">
       </div>
       <div>
-        <label for="newCharVoiceId">ElevenLabs Voice ID</label>
+        <label for="newCharVoiceId">ElevenLabs Voice ID (From Your Voice Lab)</label>
         <input type="text" id="newCharVoiceId" placeholder="Paste Voice ID here">
       </div>
       <button id="addCharBtn" style="background: #3b82f6;">Add New Character</button>
@@ -134,8 +134,8 @@
       </div>
 
       <div>
-        <label for="scriptInput">Script Line for this Character</label>
-        <textarea id="scriptInput" placeholder="Type what this character is saying..."></textarea>
+        <label for="scriptInput">Script Line (Type in English or Urdu)</label>
+        <textarea id="scriptInput" placeholder="Type what this character is saying (English or اردو)..."></textarea>
       </div>
 
       <button id="generateBtn">Generate Character Voice</button>
@@ -144,9 +144,8 @@
   </div>
 
   <script>
-    // Default starting characters stored in browser memory
     let characters = JSON.parse(localStorage.getItem('animation_chars')) || [
-      { name: 'Narrator', id: '21m00Tcm4TlvDq8ikWAM' }
+      { name: 'Narrator (Default)', id: '21m00Tcm4TlvDq8ikWAM' }
     ];
 
     const characterSelect = document.getElementById('characterSelect');
@@ -167,10 +166,8 @@
       });
     }
 
-    // Initialize dropdown on load
     updateDropdown();
 
-    // Add new character from inputs
     document.getElementById('addCharBtn').addEventListener('click', () => {
       const name = document.getElementById('newCharName').value.trim();
       const voiceId = document.getElementById('newCharVoiceId').value.trim();
@@ -185,13 +182,11 @@
       
       updateDropdown();
 
-      // Clear inputs
       document.getElementById('newCharName').value = '';
       document.getElementById('newCharVoiceId').value = '';
       alert('Character added successfully!');
     });
 
-    // Generate audio script
     document.getElementById('generateBtn').addEventListener('click', async () => {
       const elevenKey = document.getElementById('elevenKey').value.trim();
       const selectedVoiceId = characterSelect.value;
@@ -207,7 +202,7 @@
       }
 
       status.style.color = '#34d399';
-      status.textContent = 'Processing... Generating character audio via ElevenLabs.';
+      status.textContent = 'Processing... Generating audio via ElevenLabs.';
 
       try {
         const elevenResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}`, {
@@ -219,14 +214,14 @@
           },
           body: JSON.stringify({
             text: scriptText,
-            model_id: 'eleven_flash_v2_5',
+            model_id: 'eleven_multilingual_v2',
             voice_settings: { stability: 0.5, similarity_boost: 0.7 }
           })
         });
 
         if (!elevenResponse.ok) {
           const errData = await elevenResponse.json().catch(() => ({}));
-          throw new Error(errData.detail?.message || 'Failed to generate audio from ElevenLabs. Check your Voice ID and API key.');
+          throw new Error(errData.detail?.message || 'Failed to generate audio. Check your Voice ID and API key.');
         }
         
         const audioBlob = await elevenResponse.blob();
